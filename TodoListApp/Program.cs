@@ -39,6 +39,11 @@ while (true)
         Console.WriteLine("exit - завершить программу");
         continue;
     }
+    if (command == "profile")
+    {
+        Console.WriteLine($"{firstName} {lastName}, {birthYear}");
+        continue;
+    }
 
     Console.WriteLine("Неизвестная команда.");
 }
