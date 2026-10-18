@@ -56,8 +56,12 @@ while (true)
 
         if (todoCount == todos.Length)
         {
-            Console.WriteLine("В массиве нет места для новой задачи.");
-            continue;
+            string[] newTodos = new string[todos.Length * 2];
+            for (int i = 0; i < todos.Length; i++)
+            {
+                newTodos[i] = todos[i];
+            }
+            todos = newTodos;
         }
 
         todos[todoCount] = parts[1];
