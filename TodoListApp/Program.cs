@@ -29,6 +29,16 @@ while (true)
     {
         break;
     }
+    if (command == "help")
+    {
+        Console.WriteLine("Доступные команды:");
+        Console.WriteLine("help - вывести список команд");
+        Console.WriteLine("profile - показать данные пользователя");
+        Console.WriteLine("add \"текст задачи\" - добавить задачу");
+        Console.WriteLine("view - показать все задачи");
+        Console.WriteLine("exit - завершить программу");
+        continue;
+    }
 
     Console.WriteLine("Неизвестная команда.");
 }
