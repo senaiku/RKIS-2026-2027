@@ -5,14 +5,16 @@ namespace TodoListApp
         private const int InitialTodosCapacity = 2;
         private const int CapacityGrowthFactor = 2;
         private const char TaskTextSeparator = '"';
+        private const char CommandArgumentSeparator = ' ';
 
         private const string CommandHelp = "help";
         private const string CommandProfile = "profile";
         private const string CommandAdd = "add";
         private const string CommandView = "view";
+        private const string CommandDone = "done";
         private const string CommandExit = "exit";
 
-	private const string StatusDone = "сделано";
+        private const string StatusDone = "сделано";
         private const string StatusNotDone = "не сделано";
 
         private static string[] todos = new string[InitialTodosCapacity];
@@ -75,6 +77,12 @@ namespace TodoListApp
                     continue;
                 }
 
+                if (command.StartsWith(CommandDone + " "))
+                {
+                    MarkTodoDone(command);
+                    continue;
+                }
+
                 Console.WriteLine("Неизвестная команда.");
             }
         }
@@ -103,6 +111,7 @@ namespace TodoListApp
             Console.WriteLine("profile - показать данные пользователя");
             Console.WriteLine("add \"текст задачи\" - добавить задачу");
             Console.WriteLine("view - показать все задачи");
+            Console.WriteLine("done <номер> - отметить задачу выполненной");
             Console.WriteLine("exit - завершить программу");
         }
 
@@ -142,6 +151,21 @@ namespace TodoListApp
                     Console.WriteLine($"{i + 1} {todos[i]} {statusText} {dates[i]}");
                 }
             }
+        }
+
+        private static void MarkTodoDone(string command)
+        {
+            string[] parts = command.Split(CommandArgumentSeparator);
+            if (parts.Length != 2 || !int.TryParse(parts[1], out int todoNumber) || todoNumber < 1 || todoNumber > todoCount)
+            {
+                Console.WriteLine("Формат: done <номер задачи>");
+                return;
+            }
+
+            int index = todoNumber - 1;
+            statuses[index] = true;
+            dates[index] = DateTime.Now;
+            Console.WriteLine("Задача отмечена выполненной.");
         }
     }
 }
