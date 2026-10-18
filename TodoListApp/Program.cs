@@ -72,14 +72,9 @@ namespace TodoListApp
                         continue;
                     }
 
-                    if (todoCount == todos.Length)
+                                        if (todoCount == todos.Length)
                     {
-                        string[] newTodos = new string[todos.Length * CapacityGrowthFactor];
-                        for (int i = 0; i < todos.Length; i++)
-                        {
-                            newTodos[i] = todos[i];
-                        }
-                        todos = newTodos;
+                        todos = ExpandArray(todos);
                     }
 
                     todos[todoCount] = parts[1];
@@ -102,6 +97,15 @@ namespace TodoListApp
 
                 Console.WriteLine("Неизвестная команда.");
             }
+        }
+	private static T[] ExpandArray<T>(T[] array)
+        {
+            T[] expandedArray = new T[array.Length * CapacityGrowthFactor];
+            for (int i = 0; i < array.Length; i++)
+            {
+                expandedArray[i] = array[i];
+            }
+            return expandedArray;
         }
     }
 }
