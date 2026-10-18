@@ -1,6 +1,7 @@
 // Консоль выводит русский текст в кодировке UTF-8
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.InputEncoding = System.Text.Encoding.UTF8;
+Console.WriteLine("Работу выполнил Добрынин");
 
 Console.Write("Введите имя: ");
 string firstName = Console.ReadLine() ?? "";
