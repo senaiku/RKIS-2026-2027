@@ -12,6 +12,7 @@ namespace TodoListApp
         private const string CommandAdd = "add";
         private const string CommandView = "view";
         private const string CommandDone = "done";
+        private const string CommandDelete = "delete";
         private const string CommandExit = "exit";
 
         private const string StatusDone = "сделано";
@@ -83,6 +84,12 @@ namespace TodoListApp
                     continue;
                 }
 
+                if (command.StartsWith(CommandDelete + " "))
+                {
+                    DeleteTodo(command);
+                    continue;
+                }
+
                 Console.WriteLine("Неизвестная команда.");
             }
         }
@@ -104,6 +111,18 @@ namespace TodoListApp
             dates = ExpandArray(dates);
         }
 
+        private static bool TryParseTodoIndex(string numberText, out int index)
+        {
+            index = -1;
+            if (!int.TryParse(numberText, out int todoNumber) || todoNumber < 1 || todoNumber > todoCount)
+            {
+                return false;
+            }
+
+            index = todoNumber - 1;
+            return true;
+        }
+
         private static void ShowHelp()
         {
             Console.WriteLine("Доступные команды:");
@@ -112,6 +131,7 @@ namespace TodoListApp
             Console.WriteLine("add \"текст задачи\" - добавить задачу");
             Console.WriteLine("view - показать все задачи");
             Console.WriteLine("done <номер> - отметить задачу выполненной");
+            Console.WriteLine("delete <номер> - удалить задачу");
             Console.WriteLine("exit - завершить программу");
         }
 
@@ -156,16 +176,38 @@ namespace TodoListApp
         private static void MarkTodoDone(string command)
         {
             string[] parts = command.Split(CommandArgumentSeparator);
-            if (parts.Length != 2 || !int.TryParse(parts[1], out int todoNumber) || todoNumber < 1 || todoNumber > todoCount)
+            if (parts.Length != 2 || !TryParseTodoIndex(parts[1], out int index))
             {
                 Console.WriteLine("Формат: done <номер задачи>");
                 return;
             }
 
-            int index = todoNumber - 1;
             statuses[index] = true;
             dates[index] = DateTime.Now;
             Console.WriteLine("Задача отмечена выполненной.");
+        }
+
+        private static void DeleteTodo(string command)
+        {
+            string[] parts = command.Split(CommandArgumentSeparator);
+            if (parts.Length != 2 || !TryParseTodoIndex(parts[1], out int index))
+            {
+                Console.WriteLine("Формат: delete <номер задачи>");
+                return;
+            }
+
+            for (int i = index; i < todoCount - 1; i++)
+            {
+                todos[i] = todos[i + 1];
+                statuses[i] = statuses[i + 1];
+                dates[i] = dates[i + 1];
+            }
+
+            todos[todoCount - 1] = "";
+            statuses[todoCount - 1] = false;
+            dates[todoCount - 1] = default;
+            todoCount--;
+            Console.WriteLine("Задача удалена.");
         }
     }
 }
