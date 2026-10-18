@@ -12,6 +12,9 @@ namespace TodoListApp
         private const string CommandView = "view";
         private const string CommandExit = "exit";
 
+        private static string[] todos = new string[InitialTodosCapacity];
+        private static int todoCount = 0;
+
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -32,9 +35,6 @@ namespace TodoListApp
             int age = DateTime.Now.Year - birthYear;
 
             Console.WriteLine($"Добавлен пользователь {firstName} {lastName}, возраст - {age}");
-
-            string[] todos = new string[InitialTodosCapacity];
-            int todoCount = 0;
 
             while (true)
             {
@@ -60,47 +60,28 @@ namespace TodoListApp
 
                 if (command.StartsWith(CommandAdd + " "))
                 {
-                    string[] parts = command.Split(TaskTextSeparator);
-                    if (parts.Length < 2 || parts[1] == "")
-                    {
-                        Console.WriteLine("Формат: add \"текст задачи\"");
-                        continue;
-                    }
-
-                                        if (todoCount == todos.Length)
-                    {
-                        todos = ExpandArray(todos);
-                    }
-
-                    todos[todoCount] = parts[1];
-                    todoCount++;
-                    Console.WriteLine("Задача добавлена.");
+                    AddTodo(command);
                     continue;
                 }
 
                 if (command == CommandView)
                 {
-                    for (int i = 0; i < todos.Length; i++)
-                    {
-                        if (!string.IsNullOrEmpty(todos[i]))
-                        {
-                            Console.WriteLine($"{i + 1}. {todos[i]}");
-                        }
-                    }
+                    ShowTodos();
                     continue;
                 }
 
                 Console.WriteLine("Неизвестная команда.");
             }
         }
-	private static T[] ExpandArray<T>(T[] array)
+
+        private static T[] ExpandArray<T>(T[] array)
         {
             T[] expandedArray = new T[array.Length * CapacityGrowthFactor];
             for (int i = 0; i < array.Length; i++)
             {
                 expandedArray[i] = array[i];
             }
-                return expandedArray;
+            return expandedArray;
         }
 
         private static void ShowHelp()
@@ -112,9 +93,40 @@ namespace TodoListApp
             Console.WriteLine("view - показать все задачи");
             Console.WriteLine("exit - завершить программу");
         }
+
         private static void ShowProfile(string firstName, string lastName, int birthYear)
         {
             Console.WriteLine($"{firstName} {lastName}, {birthYear}");
+        }
+
+        private static void AddTodo(string command)
+        {
+            string[] parts = command.Split(TaskTextSeparator);
+            if (parts.Length < 2 || parts[1] == "")
+            {
+                Console.WriteLine("Формат: add \"текст задачи\"");
+                return;
+            }
+
+            if (todoCount == todos.Length)
+            {
+                todos = ExpandArray(todos);
+            }
+
+            todos[todoCount] = parts[1];
+            todoCount++;
+            Console.WriteLine("Задача добавлена.");
+        }
+
+        private static void ShowTodos()
+        {
+            for (int i = 0; i < todos.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(todos[i]))
+                {
+                    Console.WriteLine($"{i + 1}. {todos[i]}");
+                }
+            }
         }
     }
 }
