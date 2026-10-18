@@ -54,7 +54,7 @@ namespace TodoListApp
 
                 if (command == CommandProfile)
                 {
-                    Console.WriteLine($"{firstName} {lastName}, {birthYear}");
+                    ShowProfile(firstName, lastName, birthYear);
                     continue;
                 }
 
@@ -111,6 +111,10 @@ namespace TodoListApp
             Console.WriteLine("add \"текст задачи\" - добавить задачу");
             Console.WriteLine("view - показать все задачи");
             Console.WriteLine("exit - завершить программу");
+        }
+        private static void ShowProfile(string firstName, string lastName, int birthYear)
+        {
+            Console.WriteLine($"{firstName} {lastName}, {birthYear}");
         }
     }
 }
