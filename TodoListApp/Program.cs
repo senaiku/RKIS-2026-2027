@@ -1,85 +1,107 @@
-// Консоль выводит русский текст в кодировке UTF-8
-Console.OutputEncoding = System.Text.Encoding.UTF8;
-Console.InputEncoding = System.Text.Encoding.UTF8;
-Console.WriteLine("Работу выполнил Добрынин");
-
-Console.Write("Введите имя: ");
-string firstName = Console.ReadLine() ?? "";
-
-Console.Write("Введите фамилию: ");
-string lastName = Console.ReadLine() ?? "";
-
-Console.Write("Введите год рождения: ");
-string birthYearText = Console.ReadLine() ?? "";
-
-// Преобразуем год рождения в целое число и считаем возраст
-int birthYear = int.Parse(birthYearText);
-int age = DateTime.Now.Year - birthYear;
-
-Console.WriteLine($"Добавлен пользователь {firstName} {lastName}, возраст - {age}");
-
-string[] todos = new string[2];
-int todoCount = 0;
-
-while (true)
+namespace TodoListApp
 {
-    Console.Write("Введите команду: ");
-    string command = Console.ReadLine() ?? "";
+    internal class Program
+    {
+        private const int InitialTodosCapacity = 2;
+        private const int CapacityGrowthFactor = 2;
+        private const char TaskTextSeparator = '"';
 
-    if (command == "exit")
-    {
-        break;
-    }
-    if (command == "help")
-    {
-        Console.WriteLine("Доступные команды:");
-        Console.WriteLine("help - вывести список команд");
-        Console.WriteLine("profile - показать данные пользователя");
-        Console.WriteLine("add \"текст задачи\" - добавить задачу");
-        Console.WriteLine("view - показать все задачи");
-        Console.WriteLine("exit - завершить программу");
-        continue;
-    }
-    if (command == "profile")
-    {
-        Console.WriteLine($"{firstName} {lastName}, {birthYear}");
-        continue;
-    }
-    if (command.StartsWith("add "))
-    {
-        string[] parts = command.Split('"');
-        if (parts.Length < 2 || parts[1] == "")
-        {
-            Console.WriteLine("Формат: add \"текст задачи\"");
-            continue;
-        }
+        private const string CommandHelp = "help";
+        private const string CommandProfile = "profile";
+        private const string CommandAdd = "add";
+        private const string CommandView = "view";
+        private const string CommandExit = "exit";
 
-        if (todoCount == todos.Length)
+        static void Main(string[] args)
         {
-            string[] newTodos = new string[todos.Length * 2];
-            for (int i = 0; i < todos.Length; i++)
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.InputEncoding = System.Text.Encoding.UTF8;
+
+            Console.WriteLine("Работу выполнил Добрынин");
+
+            Console.Write("Введите имя: ");
+            string firstName = Console.ReadLine() ?? "";
+
+            Console.Write("Введите фамилию: ");
+            string lastName = Console.ReadLine() ?? "";
+
+            Console.Write("Введите год рождения: ");
+            string birthYearText = Console.ReadLine() ?? "";
+
+            int birthYear = int.Parse(birthYearText);
+            int age = DateTime.Now.Year - birthYear;
+
+            Console.WriteLine($"Добавлен пользователь {firstName} {lastName}, возраст - {age}");
+
+            string[] todos = new string[InitialTodosCapacity];
+            int todoCount = 0;
+
+            while (true)
             {
-                newTodos[i] = todos[i];
-            }
-            todos = newTodos;
-        }
+                Console.Write("Введите команду: ");
+                string command = Console.ReadLine() ?? "";
 
-        todos[todoCount] = parts[1];
-        todoCount++;
-        Console.WriteLine("Задача добавлена.");
-        continue;
-    }
-    if (command == "view")
-    {
-        for (int i = 0; i < todos.Length; i++)
-        {
-            if (!string.IsNullOrEmpty(todos[i]))
-            {
-                Console.WriteLine($"{i + 1}. {todos[i]}");
+                if (command == CommandExit)
+                {
+                    break;
+                }
+
+                if (command == CommandHelp)
+                {
+                    Console.WriteLine("Доступные команды:");
+                    Console.WriteLine("help - вывести список команд");
+                    Console.WriteLine("profile - показать данные пользователя");
+                    Console.WriteLine("add \"текст задачи\" - добавить задачу");
+                    Console.WriteLine("view - показать все задачи");
+                    Console.WriteLine("exit - завершить программу");
+                    continue;
+                }
+
+                if (command == CommandProfile)
+                {
+                    Console.WriteLine($"{firstName} {lastName}, {birthYear}");
+                    continue;
+                }
+
+                if (command.StartsWith(CommandAdd + " "))
+                {
+                    string[] parts = command.Split(TaskTextSeparator);
+                    if (parts.Length < 2 || parts[1] == "")
+                    {
+                        Console.WriteLine("Формат: add \"текст задачи\"");
+                        continue;
+                    }
+
+                    if (todoCount == todos.Length)
+                    {
+                        string[] newTodos = new string[todos.Length * CapacityGrowthFactor];
+                        for (int i = 0; i < todos.Length; i++)
+                        {
+                            newTodos[i] = todos[i];
+                        }
+                        todos = newTodos;
+                    }
+
+                    todos[todoCount] = parts[1];
+                    todoCount++;
+                    Console.WriteLine("Задача добавлена.");
+                    continue;
+                }
+
+                if (command == CommandView)
+                {
+                    for (int i = 0; i < todos.Length; i++)
+                    {
+                        if (!string.IsNullOrEmpty(todos[i]))
+                        {
+                            Console.WriteLine($"{i + 1}. {todos[i]}");
+                        }
+                    }
+                    continue;
+                }
+
+                Console.WriteLine("Неизвестная команда.");
             }
         }
-        continue;
     }
-
-    Console.WriteLine("Неизвестная команда.");
 }
