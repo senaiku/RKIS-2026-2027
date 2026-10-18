@@ -19,6 +19,7 @@ int age = DateTime.Now.Year - birthYear;
 Console.WriteLine($"Добавлен пользователь {firstName} {lastName}, возраст - {age}");
 
 string[] todos = new string[2];
+int todoCount = 0;
 
 while (true)
 {
@@ -42,6 +43,26 @@ while (true)
     if (command == "profile")
     {
         Console.WriteLine($"{firstName} {lastName}, {birthYear}");
+        continue;
+    }
+    if (command.StartsWith("add "))
+    {
+        string[] parts = command.Split('"');
+        if (parts.Length < 2 || parts[1] == "")
+        {
+            Console.WriteLine("Формат: add \"текст задачи\"");
+            continue;
+        }
+
+        if (todoCount == todos.Length)
+        {
+            Console.WriteLine("В массиве нет места для новой задачи.");
+            continue;
+        }
+
+        todos[todoCount] = parts[1];
+        todoCount++;
+        Console.WriteLine("Задача добавлена.");
         continue;
     }
 
