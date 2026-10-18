@@ -13,6 +13,8 @@ namespace TodoListApp
         private const string CommandExit = "exit";
 
         private static string[] todos = new string[InitialTodosCapacity];
+        private static bool[] statuses = new bool[InitialTodosCapacity];
+        private static DateTime[] dates = new DateTime[InitialTodosCapacity];
         private static int todoCount = 0;
 
         static void Main(string[] args)
@@ -84,6 +86,13 @@ namespace TodoListApp
             return expandedArray;
         }
 
+        private static void ExpandAllArrays()
+        {
+            todos = ExpandArray(todos);
+            statuses = ExpandArray(statuses);
+            dates = ExpandArray(dates);
+        }
+
         private static void ShowHelp()
         {
             Console.WriteLine("Доступные команды:");
@@ -110,10 +119,12 @@ namespace TodoListApp
 
             if (todoCount == todos.Length)
             {
-                todos = ExpandArray(todos);
+                ExpandAllArrays();
             }
 
             todos[todoCount] = parts[1];
+            statuses[todoCount] = false;
+            dates[todoCount] = DateTime.Now;
             todoCount++;
             Console.WriteLine("Задача добавлена.");
         }
