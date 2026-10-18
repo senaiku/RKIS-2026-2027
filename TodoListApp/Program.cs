@@ -13,10 +13,13 @@ namespace TodoListApp
         private const string CommandView = "view";
         private const string CommandDone = "done";
         private const string CommandDelete = "delete";
+        private const string CommandUpdate = "update";
         private const string CommandExit = "exit";
 
         private const string StatusDone = "сделано";
         private const string StatusNotDone = "не сделано";
+
+        private const string UpdateFormatMessage = "Формат: update <номер задачи> \"новый текст\"";
 
         private static string[] todos = new string[InitialTodosCapacity];
         private static bool[] statuses = new bool[InitialTodosCapacity];
@@ -90,6 +93,12 @@ namespace TodoListApp
                     continue;
                 }
 
+                if (command.StartsWith(CommandUpdate + " "))
+                {
+                    UpdateTodo(command);
+                    continue;
+                }
+
                 Console.WriteLine("Неизвестная команда.");
             }
         }
@@ -132,6 +141,7 @@ namespace TodoListApp
             Console.WriteLine("view - показать все задачи");
             Console.WriteLine("done <номер> - отметить задачу выполненной");
             Console.WriteLine("delete <номер> - удалить задачу");
+            Console.WriteLine("update <номер> \"новый текст\" - изменить текст задачи");
             Console.WriteLine("exit - завершить программу");
         }
 
@@ -208,6 +218,27 @@ namespace TodoListApp
             dates[todoCount - 1] = default;
             todoCount--;
             Console.WriteLine("Задача удалена.");
+        }
+
+        private static void UpdateTodo(string command)
+        {
+            string[] quoteParts = command.Split(TaskTextSeparator);
+            if (quoteParts.Length < 2 || quoteParts[1] == "")
+            {
+                Console.WriteLine(UpdateFormatMessage);
+                return;
+            }
+
+            string[] headParts = quoteParts[0].Trim().Split(CommandArgumentSeparator);
+            if (headParts.Length != 2 || !TryParseTodoIndex(headParts[1], out int index))
+            {
+                Console.WriteLine(UpdateFormatMessage);
+                return;
+            }
+
+            todos[index] = quoteParts[1];
+            dates[index] = DateTime.Now;
+            Console.WriteLine("Задача обновлена.");
         }
     }
 }
