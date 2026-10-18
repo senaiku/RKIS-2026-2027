@@ -12,6 +12,9 @@ namespace TodoListApp
         private const string CommandView = "view";
         private const string CommandExit = "exit";
 
+	private const string StatusDone = "сделано";
+        private const string StatusNotDone = "не сделано";
+
         private static string[] todos = new string[InitialTodosCapacity];
         private static bool[] statuses = new bool[InitialTodosCapacity];
         private static DateTime[] dates = new DateTime[InitialTodosCapacity];
@@ -135,7 +138,8 @@ namespace TodoListApp
             {
                 if (!string.IsNullOrEmpty(todos[i]))
                 {
-                    Console.WriteLine($"{i + 1}. {todos[i]}");
+                    string statusText = statuses[i] ? StatusDone : StatusNotDone;
+                    Console.WriteLine($"{i + 1} {todos[i]} {statusText} {dates[i]}");
                 }
             }
         }
